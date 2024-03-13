@@ -1,0 +1,24 @@
+[gcode_macro print_start]
+# params:
+#   EXTRUDER
+gcode:
+    {% set EXTRUDER = params.EXTRUDER|default(260) %}
+    {% set BED = params.BED|default(110) %}
+
+    M104 S0
+    M107
+    G21
+    G90
+    M83
+    G92 E0.0
+    M220 S100
+    _CG28
+    M140 S{BED}			;set bed temperature and wait
+    M109 S{EXTRUDER}		;set hotend temperature and wait
+    M190 S{BED}			;set bed temperature and do not wait
+    CLEAN_NOZZLE
+    QUAD_GANTRY_LEVEL
+    BED_MESH_CALIBRATE
+    PURGE
+    NOZZLE_CLEAN
+    LINE_PURGE

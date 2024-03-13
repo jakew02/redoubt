@@ -1,0 +1,26 @@
+#    Use print_end for your slicer ending script 
+[gcode_macro print_end]
+variable_heatbed_off:       True    # whether or not to turn off heatbed
+variable_motors_off:        True    # whether or not to turn off motors
+gcode:
+    SAVE_GCODE_STATE NAME=END_state
+
+    # disengage from print
+    M83                                     # relative extrusion
+    G1 E-0.3 F4800                          # retract 0.3mm of filament
+
+    PARK
+
+    M104 S0                 # turn off hotend
+    {% if heatbed_off %}
+        M140 S0             # turn off heatbed
+    {% endif %}
+
+    RESTORE_GCODE_STATE NAME=END_state
+
+    M107                    # turn off part cooling fans
+    {% if motors_off %}
+        M84                 # turn off motors
+    {% endif %}
+    CLEAR_PAUSE             # clear pause state in case it was enabled
+
